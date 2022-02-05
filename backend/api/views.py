@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -15,8 +14,6 @@ from .serializers import (IngredientListSerializer, RecipeCreateSerializer,
                           RecipeListSerializer, RecipeSerializer,
                           TagSerializer)
 from .validations import ValidationResult, validate_query_params
-
-User = get_user_model()
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

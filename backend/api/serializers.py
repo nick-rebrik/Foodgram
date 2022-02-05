@@ -1,10 +1,8 @@
-from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
+from users.serializers import UserRecipeSerializer
 from .models import Ingredient, IngredientRecipe, Recipe, Tag
-
-User = get_user_model()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -64,7 +62,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(read_only=True, many=True)
     ingredients = IngredientRecipeSerializer(read_only=True, many=True)
     image = Base64ImageField()
-    from users.serializers import UserRecipeSerializer
     author = UserRecipeSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
