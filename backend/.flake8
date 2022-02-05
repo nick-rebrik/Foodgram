@@ -1,4 +1,7 @@
 [flake8]
+ignore =
+    W503
+
 exclude =
     .git,
     __pycache__,
@@ -7,7 +10,10 @@ exclude =
     build,
     dist,
     venv,
-    */migrations/*.*
+    */migrations/
+
+per-file-ignores =
+    */settings.py:E501
 
 import-order-style = black
 
