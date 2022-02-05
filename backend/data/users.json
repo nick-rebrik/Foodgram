@@ -1,0 +1,23 @@
+[
+  {
+    "email": "gordon_ramsay@gmail.com",
+    "username": "gordon_ramsay",
+    "first_name": "Gordon",
+    "last_name": "Ramsay",
+    "password": "admin"
+  },
+  {
+    "email": "alain_ducasse@gmail.com",
+    "username": "alain_ducasse",
+    "first_name": "Alain",
+    "last_name": "Ducasse",
+    "password": "admin"
+  },
+  {
+    "email": "joel_robuchon@gmail.com",
+    "username": "joel_robuchon",
+    "first_name": "Joel",
+    "last_name": "Robuchon",
+    "password": "admin"
+  }
+]

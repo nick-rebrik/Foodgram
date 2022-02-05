@@ -1,13 +1,33 @@
 from django.contrib import admin
 
-from .models import (ShopingList, ShopingListRecipe, Tag, Recipe, Ingredient,
-                     IngredientRecipe,
-                     Favorite)
+from .models import Ingredient, Recipe, Tag
 
-admin.site.register(Tag)
-admin.site.register(Recipe)
-admin.site.register(Ingredient)
-admin.site.register(IngredientRecipe)
-admin.site.register(Favorite)
-admin.site.register(ShopingList)
-admin.site.register(ShopingListRecipe)
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    fields = (
+        'name',
+        'slug',
+        'color',
+    )
+
+
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    readonly_fields = ('pub_date',)
+    fields = (
+        'name',
+        'author',
+        'tags',
+        'image',
+        'text',
+        'cooking_time',
+    )
+    search_fields = ['name', 'author__username', 'tags__name']
+
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    search_fields = ('name',)
+    list_display = ('name', 'measurement_unit')
+    fields = ('name', 'measurement_unit')

@@ -1,3 +1,4 @@
+from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
@@ -20,7 +21,10 @@ class Ingredient(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    color = models.CharField(max_length=7, unique=True)
+    color = ColorField(
+        format='hexa',
+        unique=True
+    )
     slug = models.SlugField(unique=True)
 
     class Meta:
@@ -47,7 +51,7 @@ class IngredientRecipe(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField('Title', max_length=200)
-    image = models.ImageField('Image', upload_to='media/')
+    image = models.ImageField('Image', upload_to=r'recipes/%Y/%m/%d/')
     text = models.TextField('Description')
     author = models.ForeignKey(
         User,
@@ -60,6 +64,18 @@ class Recipe(models.Model):
         related_name='ingredients'
     )
     tags = models.ManyToManyField(Tag, related_name='recipes')
+    users_chose_as_favorite = models.ManyToManyField(
+        User,
+        verbose_name="Favorite recipes",
+        related_name="favorite_recipes",
+        blank=True,
+    )
+    users_put_in_cart = models.ManyToManyField(
+        User,
+        verbose_name="Recipes in cart",
+        related_name="cart_recipes",
+        blank=True,
+    )
     cooking_time = models.PositiveIntegerField(
         validators=[
             MinValueValidator(1, message='Minimal value - 1')

@@ -2,8 +2,7 @@ from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
-from .models import Favorite, Ingredient, IngredientRecipe, Recipe, \
-    ShopingListRecipe, Tag
+from .models import Ingredient, IngredientRecipe, Recipe, Tag
 
 User = get_user_model()
 
@@ -19,7 +18,11 @@ class IngredientListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = (
+            'id',
+            'name',
+            'measurement_unit'
+        )
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
@@ -29,7 +32,12 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientRecipe
-        fields = ('id', 'name', 'measurement_unit', 'amount')
+        fields = (
+            'id',
+            'name',
+            'measurement_unit',
+            'amount'
+        )
 
     def get_id(self, ingredient_object):
         return ingredient_object.ingredient.id
@@ -46,41 +54,56 @@ class IngredientRecipeCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientRecipe
-        fields = ('id', 'amount')
+        fields = (
+            'id',
+            'amount'
+        )
 
 
 class RecipeSerializer(serializers.ModelSerializer):
     tags = TagSerializer(read_only=True, many=True)
     ingredients = IngredientRecipeSerializer(read_only=True, many=True)
-    is_favorited = serializers.SerializerMethodField(read_only=True)
+    image = Base64ImageField()
     from users.serializers import UserRecipeSerializer
     author = UserRecipeSerializer(read_only=True)
+    is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Recipe
         fields = (
-            'id', 'tags', 'author', 'ingredients', 'is_favorited',
-            'is_in_shopping_cart', 'name', 'image', 'text', 'cooking_time'
+            'id',
+            'tags',
+            'author',
+            'ingredients',
+            'is_favorited',
+            'is_in_shopping_cart',
+            'name',
+            'image',
+            'text',
+            'cooking_time'
         )
 
-    def get_is_favorited(self, recipe_object):
-        return Favorite.objects.filter(
-            user=self.context['request'].user.id,
-            recipe=recipe_object
-        ).exists()
+    def get_is_favorited(self, recipe):
+        user = self.context["request"].user
+        return recipe.users_chose_as_favorite.filter(id=user.id).exists()
 
-    def get_is_in_shopping_cart(self, recipe_object):
-        return ShopingListRecipe.objects.filter(
-            recipe=recipe_object
-        ).exists()
+    def get_is_in_shopping_cart(self, recipe):
+        user = self.context["request"].user
+        return recipe.users_put_in_cart.filter(id=user.id).exists()
 
 
 class RecipeListSerializer(serializers.ModelSerializer):
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
 
 
 class RecipeCreateSerializer(serializers.ModelSerializer):
@@ -94,14 +117,18 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         fields = (
-            'ingredients', 'tags', 'image', 'name', 'text', 'cooking_time'
+            'ingredients',
+            'tags',
+            'image',
+            'name',
+            'text',
+            'cooking_time'
         )
 
     def create(self, validated_data):
-        author = self.context['request'].user
         ingredients_ = validated_data.pop('ingredients')
         tags = validated_data.pop('tags')
-        recipe = Recipe.objects.create(**validated_data, author=author)
+        recipe = Recipe.objects.create(**validated_data)
         for item in ingredients_:
             ingredient, created = IngredientRecipe.objects.get_or_create(
                 ingredient_id=item['id'],
@@ -125,5 +152,3 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             recipe.ingredients.add(ingredient)
         recipe.tags.add(*tags)
         return recipe
-
-

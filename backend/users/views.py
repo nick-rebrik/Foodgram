@@ -5,12 +5,12 @@ from djoser.permissions import CurrentUserOrAdmin
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Follow
+from .paginations import DefaultPagination, UserPagination
 from .serializers import UserCreateSerializer, UserSerializer
 
 User = get_user_model()
@@ -18,6 +18,7 @@ User = get_user_model()
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
+    pagination_class = UserPagination
     permission_classes = [IsAuthenticated]
     http_method_names = ('get', 'post')
 
@@ -54,7 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class SubscriptionsListViewSet(ListAPIView):
     serializer_class = UserSerializer
-    pagination_class = PageNumberPagination
+    pagination_class = DefaultPagination
 
     def get_queryset(self):
         follow_objects = get_list_or_404(Follow, user=self.request.user)

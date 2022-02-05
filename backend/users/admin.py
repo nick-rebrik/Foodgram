@@ -6,7 +6,8 @@ from .models import Follow, User
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
-    list_filter = ('email', 'username')
+    search_fields = ('username', 'email')
+    list_filter = ('username', 'email')
 
     add_fieldsets = (
         (None, {

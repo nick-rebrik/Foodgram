@@ -1,6 +1,5 @@
 version: '3.3'
 services:
-
   db:
     image: postgres:12.4
     volumes:
@@ -8,17 +7,9 @@ services:
     env_file:
       - ./.env
 
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    volumes:
-      - ../frontend/:/app/result_build/
-
-  backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+  web:
+    image: nickrebrik/foodgram-backend:v1
+    restart: always
     volumes:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
@@ -26,6 +17,13 @@ services:
       - db
     env_file:
       - ./.env
+
+  frontend:
+    image: nickrebrik/foodgram-frontend:v1
+    volumes:
+      - ../frontend/:/app/result_build/
+    depends_on:
+      - web
 
   nginx:
     image: nginx:1.19.3
@@ -36,6 +34,13 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/redoc.html:/usr/share/nginx/html/api/docs/redoc.html
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
+      - static_value:/var/html/static/
+      - media_value:/var/html/media/
+
+    depends_on:
+          - frontend
+          - db
+          - web
 
 volumes:
   postgres_data:
