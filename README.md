@@ -29,5 +29,3 @@ On this service, users can publish recipes, subscribe to other users' posts, add
 
 - [Nick Rebrik](https://github.com/nick-rebrik) - Backend part
 - [Yandex Praktikum](https://github.com/yandex-praktikum) - Frontend part</br>
-
-> #### ***username - admin</br> password - admin***
