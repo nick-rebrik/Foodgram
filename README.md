@@ -1,5 +1,5 @@
 # Foodgram
-***Project address [3.142.83.202](http://3.142.83.202)***</br>
+***Project address [foodgram.ml](http://foodgram.ml)***</br>
 
 ![Foodgram workflow](https://github.com/nick-rebrik/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
