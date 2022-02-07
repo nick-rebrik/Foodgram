@@ -27,5 +27,5 @@ On this service, users can publish recipes, subscribe to other users' posts, add
 
 ### Authors
 
-- [Nick Rebrik](https://github.com/nick-rebrik) - Backend part
+- [Nick Rebrik](https://github.com/nick-rebrik) - Backend, DevOps part
 - [Yandex Praktikum](https://github.com/yandex-praktikum) - Frontend part</br>
